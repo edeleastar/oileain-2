@@ -1,5 +1,3 @@
-import { ICustomElementViewModel } from '@aurelia/runtime';
+import { ICustomElementViewModel } from "@aurelia/runtime";
 
-export class NavBar implements ICustomElementViewModel {
-
-}
+export class NavBar implements ICustomElementViewModel {}

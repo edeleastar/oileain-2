@@ -3,6 +3,7 @@ import Map = L.Map;
 import LayersObject = L.Control.LayersObject;
 import { Geodetic } from "./poi";
 import LayerControl = L.Control.Layers;
+import Layer = L.Layer;
 
 export interface LeafletMapDescriptor {
   id: string;
@@ -48,6 +49,13 @@ export class LeafletMap {
   }
 
   addControl() {
-    this.control = L.control.layers(this.baseLayers, this.overlays).addTo(this.imap);
+    this.control = L.control
+      .layers(this.baseLayers, this.overlays)
+      .addTo(this.imap);
+  }
+
+  addLayer(title: string, layer: Layer) {
+    this.overlays[title] = layer;
+    this.imap.addLayer(layer);
   }
 }

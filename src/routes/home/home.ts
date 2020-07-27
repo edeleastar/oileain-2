@@ -1,5 +1,3 @@
-import { LeafletMap } from "../../services/leaflet-map";
-
 import { IViewModel } from "aurelia";
 import { CoastalLeafletMap } from "../../services/coastal-leaflet-map";
 import { Coast } from "../../services/poi";

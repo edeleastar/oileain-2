@@ -41,6 +41,7 @@ export class Oileain {
       this.coastMap.set(coast.variable, coast);
       coast.pois.forEach((poi) => {
         poi.coast = coast;
+        poi.safeName = encodeURI(poi.safeName);
         this.islandMap.set(poi.safeName, poi);
       });
     });

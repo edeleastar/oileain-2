@@ -1,0 +1,28 @@
+<template>
+  <import from="../../components/poi-lat-lng/poi-lat-lng.html"></import>
+  <import from="../../components/poi-description/poi-description.html"></import>
+
+  <div class="uk-text-center" uk-grid>
+    <div class="uk-width-1-3@m">
+      <div id="${mainMapDescriptor.id}" style="height:${mainMapDescriptor.height}px"></div>
+      <div if.bind="poiSelected">
+        <div class="uk-card uk-card-default uk-card-body">
+          <poi-lat-lng poi.bind="poi"></poi-lat-lng>
+        </div>
+      </div>
+    </div>
+    <div class="uk-width-expand@m">
+      <div id="${islandMapDescriptor.id}" style="height:${islandMapDescriptor.height}px"></div>
+      <div if.bind="poiSelected">
+        <div class="uk-card uk-card-default uk-card-body">
+          <poi-description poi.bind="poi"></poi-description>
+        </div>
+      </div>
+      <div else>
+        <div class="uk-card uk-card-default uk-card-body">
+          <p> Select Island marker on map to view details...
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

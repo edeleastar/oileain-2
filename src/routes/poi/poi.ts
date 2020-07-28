@@ -3,7 +3,7 @@ import { IViewModel } from "aurelia";
 import { Oileain } from "../../services/oileain";
 import { PointOfInterest } from "../../services/poi";
 
-export class Poi implements IViewModel  {
+export class Poi implements IViewModel {
   title = "Olieain POI View";
 
   mapDescriptor = {
@@ -26,13 +26,13 @@ export class Poi implements IViewModel  {
   }
 
   async afterAttach() {
-    await new Promise(resolve => setTimeout(resolve));
+    await new Promise((resolve) => setTimeout(resolve));
     this.map = new LeafletMap(this.mapDescriptor);
     if (this.poi) {
       this.renderPoi(this.poi);
     }
   }
-  
+
   renderPoi(poi) {
     this.poi = poi;
     this.title = poi.name;

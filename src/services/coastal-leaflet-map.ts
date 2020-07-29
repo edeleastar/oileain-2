@@ -20,7 +20,7 @@ export class CoastalLeafletMap extends LeafletMap {
       let marker = L.marker([poi.coordinates.geo.lat, poi.coordinates.geo.long]);
       var newpopup = L.popup({ autoClose: false, closeOnClick: false });
       const popupTitle = link
-      ? `<a href='/poi/${poi.safeName}'>${poi.name} <small>(click for details}</small></a>`
+      ? `<a href='/poi(${poi.safeName})'>${poi.name} <small>(click for details}</small></a>`
       : poi.name;
       newpopup.setContent(popupTitle);
       marker.bindPopup(newpopup);

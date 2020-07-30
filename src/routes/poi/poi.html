@@ -1,9 +1,10 @@
 <import from="../../components/poi-coordinates/poi-coordinates.html"></import>
 <import from="../../components/poi-description/poi-description.html"></import>
+<import from="../../components/leaflet-map/leaflet-map"></import>
 
 <div class="uk-text-center" uk-grid>
   <div class="uk-width-expand@m uk-animation-slide-left">
-    <div id="${mapDescriptor.id}" style="height:${mapDescriptor.height}px"></div>
+    <leaflet-map mapid="poi" height="300" lat="53.2734" lng="-7.7783203" zoom="8" min-zoom="7" active-layer="Satellite"></leaflet-map>
     <div class="uk-card uk-card-default uk-card-body">
       <poi-coordinates poi.bind="poi"></poi-coordinates>
     </div>

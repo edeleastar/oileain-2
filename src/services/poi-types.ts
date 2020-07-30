@@ -45,3 +45,18 @@ export interface Region {
   id: string;
   location: Geodetic;
 }
+
+export interface CoastsEvent {
+  mapid: string;
+  coasts: Array<Coast>;
+  link : boolean;
+  poiSelect : PoiSelect;
+}
+
+export interface PoiSelect {
+  onSelect(id: string): any;
+}
+export interface PoiEvent {
+  mapid: string;
+  poi: PointOfInterest;
+}

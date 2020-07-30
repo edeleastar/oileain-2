@@ -1,35 +1,13 @@
-import { CoastalLeafletMap, PoiSelect } from "../../services/coastal-leaflet-map";
-import { LeafletMap } from "../../services/leaflet-map";
-import { PointOfInterest, Coast } from "../../services/poi";
+import { PointOfInterest, Coast, PoiSelect } from "../../services/poi-types";
 import { Oileain } from "../../services/oileain";
+import { EventAggregator } from "aurelia";
 
 export class Navigator implements PoiSelect {
-
-  mainMapDescriptor = {
-    id: "home-map-id",
-    height: 650,
-    location: { lat: 53.2734, long: -7.7783203 },
-    zoom: 7,
-    minZoom: 7,
-    activeLayer: "",
-  };
-
-  islandMapDescriptor = {
-    id: "island-map-id",
-    height: 250,
-    location: { lat: 53.2734, long: -7.7783203 },
-    zoom: 8,
-    minZoom: 7,
-    activeLayer: "Satellite",
-  };
-
-  mainMap: CoastalLeafletMap;
-  islandMap: LeafletMap;
   coasts: Array<Coast>;
   poi: PointOfInterest;
   poiSelected = false;
 
-  constructor(private oileain: Oileain) {}
+  constructor(private oileain: Oileain, private ea: EventAggregator) {}
 
   public async enter(parameters: { id: string }): Promise<void> {
     this.coasts = await this.oileain.getCoasts();
@@ -37,18 +15,19 @@ export class Navigator implements PoiSelect {
 
   async afterAttach() {
     await new Promise((resolve) => setTimeout(resolve));
-    this.mainMap = new CoastalLeafletMap(this.mainMapDescriptor);
-    this.islandMap = new LeafletMap(this.islandMapDescriptor);
-    this.mainMap.populateCoasts(this.coasts, false, this);
+    if (this.coasts) {
+      this.ea.publish("coasts", {
+        mapid: "ireland",
+        coasts: this.coasts,
+        link: false,
+        poiSelect: this,
+      });
+    }
   }
 
   async onSelect(id: string) {
     this.poi = await this.oileain.getIslandById(id);
-    if (this.islandMap) {
-      this.islandMap.addPopup("Islands", this.poi.name, this.poi.coordinates.geo);
-      this.islandMap.moveTo(15, this.poi.coordinates.geo);
-      this.islandMap.invalidateSize();
-      this.poiSelected = true;
-    }
+    this.ea.publish("poi", { mapid: "island", poi: this.poi });
+    this.poiSelected = true;
   }
 }

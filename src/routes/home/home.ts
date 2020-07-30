@@ -1,32 +1,21 @@
-import { IViewModel } from "aurelia";
-import { CoastalLeafletMap } from "../../services/coastal-leaflet-map";
-import { Coast } from "../../services/poi";
+import { EventAggregator } from "aurelia";
+import { Coast } from "../../services/poi-types";
 import { Oileain } from "../../services/oileain";
+import { IRouteableComponent } from '@aurelia/router';
 
-export class Home implements IViewModel {
-    mapDescriptor = {
-      id: "home-map-id",
-      height: 1200,
-      location: { lat: 53.2734, long: -7.7783203 },
-      zoom: 8,
-      minZoom: 7,
-      activeLayer: "",
-    };
-  
-    map: CoastalLeafletMap;
-    coasts: Array<Coast>;
-  
-    constructor(private oileain: Oileain) {}
-  
-    public async enter(parameters: { id: string }): Promise<void> {
-      this.coasts = await this.oileain.getCoasts();
-    }
-  
-    async afterAttach() {
-      await new Promise(resolve => setTimeout(resolve));
-      this.map = new CoastalLeafletMap(this.mapDescriptor);
-      if (this.coasts) {
-        this.map.populateCoasts(this.coasts);
-      }
+export class Home implements IRouteableComponent  {
+  coasts: Array<Coast>;
+
+  constructor(private oileain: Oileain, private ea: EventAggregator) {}
+
+  public async enter(parameters: { id: string }): Promise<void> {
+    this.coasts = await this.oileain.getCoasts();
+  }
+
+  async afterAttach() {
+    await new Promise((resolve) => setTimeout(resolve));
+    if (this.coasts) {
+      this.ea.publish("coasts", { mapid: "home", coasts: this.coasts });
     }
   }
+}

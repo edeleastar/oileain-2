@@ -1,6 +1,5 @@
-
-import { bindable, inject, HttpClient } from 'aurelia';
-import { Coast, PointOfInterest, Region } from "./poi";
+import { inject, HttpClient } from "aurelia";
+import { Coast, PointOfInterest } from "./poi-types";
 
 @inject(HttpClient)
 export class Oileain {
@@ -47,4 +46,3 @@ export class Oileain {
     });
   }
 }
-

@@ -1,5 +1,5 @@
 import { Oileain } from "../../services/oileain";
-import { Coast } from "../../services/poi";
+import { Coast } from "../../services/poi-types";
 
 export class CoastsSidebar {
   coasts: Array<Coast>;

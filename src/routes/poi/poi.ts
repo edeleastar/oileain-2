@@ -1,6 +1,6 @@
 import { EventAggregator } from "aurelia";
 import { Oileain } from "../../services/oileain";
-import { PointOfInterest } from "../../services/poi";
+import { PointOfInterest } from "../../services/poi-types";
 import { IRouteableComponent } from '@aurelia/router';
 export class Poi implements IRouteableComponent {
   title = "Olieain POI View";
@@ -24,6 +24,6 @@ export class Poi implements IRouteableComponent {
   renderPoi(poi) {
     this.poi = poi;
     this.title = poi.name;
-    this.ea.publish("poi", this.poi);
+    this.ea.publish("poi", { mapid: "poi", poi: this.poi });
   }
 }

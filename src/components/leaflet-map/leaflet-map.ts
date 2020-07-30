@@ -1,3 +1,4 @@
+import { Poi } from "./../../routes/poi/poi";
 import { ICustomElementViewModel } from "@aurelia/runtime";
 import { bindable, EventAggregator } from "aurelia";
 import * as L from "leaflet";
@@ -7,16 +8,7 @@ import LayerControl = L.Control.Layers;
 import Layer = L.Layer;
 import LayerGroup = L.LayerGroup;
 import Marker = L.Marker;
-import { PointOfInterest, Coast } from "../../services/poi";
-
-export interface Geodetic {
-  lat: number;
-  long: number;
-}
-
-export interface PoiSelect {
-  onSelect(id: string): any;
-}
+import { PointOfInterest, Coast, CoastsEvent, PoiEvent, PoiSelect, Geodetic } from "../../services/poi-types";
 
 export class LeafletMap implements ICustomElementViewModel {
   @bindable mapid = "map-id";
@@ -43,16 +35,20 @@ export class LeafletMap implements ICustomElementViewModel {
       {
         attribution:
           "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-      }
+      },
     ),
   };
 
   constructor(private ea: EventAggregator) {
-    this.ea.subscribe("coasts", (coasts: Array<Coast>) => {
-      this.populateCoasts(coasts);
+    this.ea.subscribe("coasts", (event: CoastsEvent) => {
+      if (this.mapid == event.mapid) {
+        this.populateCoasts(event.coasts, event.link, event.poiSelect);
+      }
     });
-    this.ea.subscribe("poi", (poi: PointOfInterest) => {
-      this.populatePoi(poi);
+    this.ea.subscribe("poi", (event: PoiEvent) => {
+      if (this.mapid == event.mapid) {
+        this.populatePoi(event.poi);
+      }
     });
   }
 
@@ -69,9 +65,7 @@ export class LeafletMap implements ICustomElementViewModel {
   }
 
   addControl() {
-    this.control = L.control
-      .layers(this.baseLayers, this.overlays)
-      .addTo(this.imap);
+    this.control = L.control.layers(this.baseLayers, this.overlays).addTo(this.imap);
   }
 
   addLayer(title: string, layer: Layer) {
@@ -112,17 +106,10 @@ export class LeafletMap implements ICustomElementViewModel {
     hiddenMethodMap._onResize();
   }
 
-  populateCoast(
-    coast: Coast,
-    link: boolean = true,
-    poiSelect: PoiSelect = null
-  ) {
+  populateCoast(coast: Coast, link: boolean = true, poiSelect: PoiSelect = null) {
     let group = L.layerGroup([]);
     coast.pois.forEach((poi) => {
-      let marker = L.marker([
-        poi.coordinates.geo.lat,
-        poi.coordinates.geo.long,
-      ]);
+      let marker = L.marker([poi.coordinates.geo.lat, poi.coordinates.geo.long]);
       var newpopup = L.popup({ autoClose: false, closeOnClick: false });
       const popupTitle = link
         ? `<a href='/poi(${poi.safeName})'>${poi.name} <small>(click for details}</small></a>`
@@ -143,11 +130,7 @@ export class LeafletMap implements ICustomElementViewModel {
     this.control.addOverlay(group, coast.title);
   }
 
-  populateCoasts(
-    coasts: Array<Coast>,
-    link: boolean = true,
-    poiSelect: PoiSelect = null
-  ) {
+  populateCoasts(coasts: Array<Coast>, link: boolean = true, poiSelect: PoiSelect = null) {
     if (this.imap) {
       coasts.forEach((coast) => {
         this.populateCoast(coast, link, poiSelect);

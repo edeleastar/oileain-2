@@ -1,8 +1,9 @@
 import { IViewModel, EventAggregator } from "aurelia";
-import { Coast } from "../../services/poi";
+import { Coast } from "../../services/poi-types";
 import { Oileain } from "../../services/oileain";
+import { IRouteableComponent } from '@aurelia/router';
 
-export class Home implements IViewModel {
+export class Home implements IRouteableComponent  {
   coasts: Array<Coast>;
 
   constructor(private oileain: Oileain, private ea: EventAggregator) {}
@@ -14,7 +15,7 @@ export class Home implements IViewModel {
   async afterAttach() {
     await new Promise((resolve) => setTimeout(resolve));
     if (this.coasts) {
-      this.ea.publish("coasts", this.coasts);
+      this.ea.publish("coasts", { mapid: "home", coasts: this.coasts });
     }
   }
 }

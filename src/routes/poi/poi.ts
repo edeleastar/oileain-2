@@ -2,8 +2,8 @@ import { LeafletMap } from "../../services/leaflet-map";
 import { IViewModel } from "aurelia";
 import { Oileain } from "../../services/oileain";
 import { PointOfInterest } from "../../services/poi";
-
-export class Poi implements IViewModel {
+import { IRouteableComponent } from '@aurelia/router';
+export class Poi implements IRouteableComponent {
   title = "Olieain POI View";
 
   mapDescriptor = {
@@ -25,6 +25,7 @@ export class Poi implements IViewModel {
     this.renderPoi(poi);
   }
 
+  
   async afterAttach() {
     await new Promise((resolve) => setTimeout(resolve));
     this.map = new LeafletMap(this.mapDescriptor);

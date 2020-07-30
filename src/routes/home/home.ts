@@ -1,4 +1,4 @@
-import { IViewModel, EventAggregator } from "aurelia";
+import { EventAggregator } from "aurelia";
 import { Coast } from "../../services/poi-types";
 import { Oileain } from "../../services/oileain";
 import { IRouteableComponent } from '@aurelia/router';

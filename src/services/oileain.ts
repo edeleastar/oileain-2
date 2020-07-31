@@ -23,13 +23,14 @@ export class Oileain {
   }
 
   async getIsland(poi: PointOfInterest) {
-    let cachedPoi = this.islandMap.get(poi.safeName);
+    let cachedPoi = await this.islandMap.get(poi.safeName);
     if (cachedPoi.description) {
       return cachedPoi;
     } else {
       const path = `https://edeleastar.github.io/oileain-api/${poi.coast.variable}/${poi.safeName}.json`;
       const response = await this.http.fetch(path);
       const island = await response.json();
+      island.safeName = poi.safeName;
       this.islandMap.set(poi.safeName, island);
       return island;
     }

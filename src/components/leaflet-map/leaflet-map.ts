@@ -8,7 +8,7 @@ import LayerControl = L.Control.Layers;
 import Layer = L.Layer;
 import LayerGroup = L.LayerGroup;
 import Marker = L.Marker;
-import { PointOfInterest, Coast, CoastsEvent, PoiEvent, PoiSelect, Geodetic } from "../../services/poi-types";
+import { PointOfInterest, Coast, CoastsEvent, PoiEvent, Geodetic } from "../../services/poi-types";
 
 export class LeafletMap implements ICustomElementViewModel {
   @bindable mapid = "map-id";
@@ -42,7 +42,7 @@ export class LeafletMap implements ICustomElementViewModel {
   constructor(private ea: EventAggregator) {
     this.ea.subscribe("coasts", (event: CoastsEvent) => {
       if (this.mapid == event.mapid) {
-        this.populateCoasts(event.coasts, event.link, event.poiSelect);
+        this.populateCoasts(event.coasts, event.link);
       }
     });
     this.ea.subscribe("poi", (event: PoiEvent) => {
@@ -106,7 +106,7 @@ export class LeafletMap implements ICustomElementViewModel {
     hiddenMethodMap._onResize();
   }
 
-  populateCoast(coast: Coast, link: boolean = true, poiSelect: PoiSelect = null) {
+  populateCoast(coast: Coast, link: boolean = true) {
     let group = L.layerGroup([]);
     coast.pois.forEach((poi) => {
       let marker = L.marker([poi.coordinates.geo.lat, poi.coordinates.geo.long]);
@@ -116,24 +116,23 @@ export class LeafletMap implements ICustomElementViewModel {
         : poi.name;
       newpopup.setContent(popupTitle);
       marker.bindPopup(newpopup);
+      marker.bindTooltip(poi.name);
       marker.addTo(group);
-      if (poiSelect) {
-        this.markerMap.set(marker, poi);
-        marker.addTo(group).on("popupopen", (event) => {
-          const marker = event.popup._source;
-          const shortPoi = this.markerMap.get(marker);
-          poiSelect.onSelect(shortPoi.safeName);
-        });
-      }
+      this.markerMap.set(marker, poi);
+      marker.addTo(group).on("popupopen", (event) => {
+        const marker = event.popup._source;
+        const shortPoi = this.markerMap.get(marker);
+        this.ea.publish("poiselect", shortPoi.safeName);
+      });
     });
     this.addLayer(coast.title, group);
     this.control.addOverlay(group, coast.title);
   }
 
-  populateCoasts(coasts: Array<Coast>, link: boolean = true, poiSelect: PoiSelect = null) {
+  populateCoasts(coasts: Array<Coast>, link: boolean = true) {
     if (this.imap) {
       coasts.forEach((coast) => {
-        this.populateCoast(coast, link, poiSelect);
+        this.populateCoast(coast, link);
       });
       this.imap.invalidateSize();
     }

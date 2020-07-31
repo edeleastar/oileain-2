@@ -2,12 +2,18 @@ import { PointOfInterest, Coast, PoiSelect } from "../../services/poi-types";
 import { Oileain } from "../../services/oileain";
 import { EventAggregator } from "aurelia";
 
-export class Navigator implements PoiSelect {
+export class Navigator {
   coasts: Array<Coast>;
   poi: PointOfInterest;
   poiSelected = false;
 
-  constructor(private oileain: Oileain, private ea: EventAggregator) {}
+  constructor(private oileain: Oileain, private ea: EventAggregator) {
+    this.ea.subscribe("poiselect", async (poiname: string) => {
+      this.poi = await this.oileain.getIslandById(poiname);
+      this.ea.publish("poi", { mapid: "island", poi: this.poi });
+      this.poiSelected = true;
+    });
+  }
 
   public async enter(parameters: { id: string }): Promise<void> {
     this.coasts = await this.oileain.getCoasts();
@@ -23,11 +29,5 @@ export class Navigator implements PoiSelect {
         poiSelect: this,
       });
     }
-  }
-
-  async onSelect(id: string) {
-    this.poi = await this.oileain.getIslandById(id);
-    this.ea.publish("poi", { mapid: "island", poi: this.poi });
-    this.poiSelected = true;
   }
 }

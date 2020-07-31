@@ -1,4 +1,3 @@
-import { Poi } from "./../../routes/poi/poi";
 import { ICustomElementViewModel } from "@aurelia/runtime";
 import { bindable, EventAggregator } from "aurelia";
 import * as L from "leaflet";

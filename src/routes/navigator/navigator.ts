@@ -26,7 +26,6 @@ export class Navigator {
         mapid: "ireland",
         coasts: this.coasts,
         link: false,
-        poiSelect: this,
       });
     }
   }
